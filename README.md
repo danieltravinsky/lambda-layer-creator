@@ -11,4 +11,4 @@ First your system needs to have Docker and Docker Build installed and working.
 Next make sure [.env](.env) file is set up correctly with the following:
  * ARTIFACT - Name of the file that will be created and copied ( .zip file ). Defaults to `opencv-python312-layer.zip`.
  * HOST_PATH - Directory you save the artifact to.
-For creation, run [make-layer.sh](make-layer.sh)
+For creation, run [make-layer.sh](make-layer.sh). Make sure you run with elevated privileges since docker commands are being run.
