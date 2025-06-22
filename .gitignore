@@ -1,0 +1,5 @@
+# Ignore files created from the script
+layer/
+
+# Ignore zipped packages ( such as the artifact )
+*.zip
