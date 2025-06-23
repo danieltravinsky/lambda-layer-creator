@@ -1,0 +1,2 @@
+# Sample that doesnt container the actual scripts
+FROM whatever
