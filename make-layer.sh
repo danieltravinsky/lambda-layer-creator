@@ -10,15 +10,22 @@ set +a
 # Set to "True" or "False", invalid inputs parsed as False
 # DELETE_AFTER_FAIL="True"
 
+if [ -z "$HOST_PATH" ] || [ -z "$ARTIFACT" ]; then
+  echo "Either HOST_PATH or ARTIFACT env variables is missing, using .env"
+  set -a
+  source .env
+  set +a
+fi
+
 if [ -z $HOST_PATH ]; then
-  echo "Path not provided, using ./layer"
-  HOST_PATH="layer"
+  echo "Path not provided in .env, using default value: layer"
+  HOST_PATH=layer
 fi
 
 mkdir -p $HOST_PATH
 
 if [ -z $ARTIFACT ]; then
-  echo "Artifact name not provided, using opencv-python312-layer.zip"
+  echo "Artifact name not provided, using packages-layer.zip"
   ARTIFACT="packages-layer.zip"
 fi
 
@@ -28,6 +35,11 @@ fi
 if [ -e "$HOST_PATH/$ARTIFACT" ]; then
     echo "Layer already created, exiting"
     exit 0
+fi
+
+if [[ ! "$ARTIFACT" =~ \.zip$ ]]; then
+  echo "artifact_name should end with .zip, changing it for you.."
+  export ARTIFACT=$ARTIFACT.zip
 fi
 
 # Verify the path exists
@@ -54,7 +66,7 @@ fi
 CONTAINER_NAME="layer-builder-$(date +%s)"
 
 # Run Docker container with volume attached
-docker run -it --env-file .env --name "$CONTAINER_NAME" makelayer:latest
+docker run -it -e ARTIFACT="$ARTIFACT" --name "$CONTAINER_NAME" makelayer:latest
 
 if [ $? -ne 0 ]; then
   echo "❌ Container run failed"
