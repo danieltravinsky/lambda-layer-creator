@@ -4,7 +4,7 @@ set -e
 
 python3.12 -m venv /tmp/venv
 source /tmp/venv/bin/activate
-pip install opencv-python-headless numpy
+pip install -r requirements.txt
 
 cp -r /tmp/venv/lib64/python3.12/site-packages/* /lambda/python/
 cd /lambda

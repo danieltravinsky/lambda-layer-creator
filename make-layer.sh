@@ -6,30 +6,20 @@ set -a
 source .env
 set +a
 
-# Parse arguments
-# while [[ "$#" -gt 0 ]]; do
-#     case $1 in
-#         --path)
-#             HOST_PATH="$2"
-#             shift 2
-#             ;;
-#         *)
-#             echo "Unknown parameter passed: $1"
-#             exit 1
-#             ;;
-#     esac
-# done
+# TODO
+# Set to "True" or "False", invalid inputs parsed as False
+# DELETE_AFTER_FAIL="True"
 
 if [ -z $HOST_PATH ]; then
   echo "Path not provided, using ./layer"
-  HOST_PATH=layer
+  HOST_PATH="layer"
 fi
 
 mkdir -p $HOST_PATH
 
 if [ -z $ARTIFACT ]; then
   echo "Artifact name not provided, using opencv-python312-layer.zip"
-  ARTIFACT="opencv-python312-layer.zip"
+  ARTIFACT="packages-layer.zip"
 fi
 
 # Prompt for the path
@@ -66,6 +56,19 @@ CONTAINER_NAME="layer-builder-$(date +%s)"
 # Run Docker container with volume attached
 docker run -it --env-file .env --name "$CONTAINER_NAME" makelayer:latest
 
+if [ $? -ne 0 ]; then
+  echo "❌ Container run failed"
+  echo "Check script-for-container.sh and error message to see what went wrong. Exiting."
+  exit 1
+fi
+
 docker cp "$CONTAINER_NAME:/lambda/layer/$ARTIFACT" "$HOST_PATH/$ARTIFACT"
+
+if [ $? -ne 0 ]; then
+  echo "❌ Copying from container failed"
+  echo "Container will not be deleted" # Change after adding DELETE_AFTER_FAIL
+  echo "Check that the paths and names match. Exiting."
+  exit 1
+fi
 
 docker rm $CONTAINER_NAME

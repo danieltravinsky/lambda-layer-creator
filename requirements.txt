@@ -1,0 +1,4 @@
+# For opencv-python
+opencv-python-headless
+numpy
+pillow
