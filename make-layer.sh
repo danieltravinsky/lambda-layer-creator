@@ -6,9 +6,8 @@ set -a
 source .env
 set +a
 
-# TODO
 # Set to "True" or "False", invalid inputs parsed as False
-# DELETE_AFTER_FAIL="True"
+DELETE_AFTER_FAIL="False"
 
 if [ -z "$HOST_PATH" ] || [ -z "$ARTIFACT" ]; then
   echo "Either HOST_PATH or ARTIFACT env variables is missing, using .env"
@@ -78,9 +77,15 @@ docker cp "$CONTAINER_NAME:/lambda/layer/$ARTIFACT" "$HOST_PATH/$ARTIFACT"
 
 if [ $? -ne 0 ]; then
   echo "❌ Copying from container failed"
-  echo "Container will not be deleted" # Change after adding DELETE_AFTER_FAIL
   echo "Check that the paths and names match. Exiting."
+  if [ $DELETE_AFTER_FAIL == "True" ]; then
+    echo "DELETE_AFTER_FAIL set to True, deleting container $CONTAINER_NAME"
+    docker rm $CONTAINER_NAME
+  elif [ $DELETE_AFTER_FAIL == "False" ]; then
+    echo "DELETE_AFTER_FAIL set to False, keeping container $CONTAINER_NAME"
   exit 1
+else
+  echo "Copying completed successfully to $HOST_PATH/$ARTIFACT"
+  echo "Deleting container $CONTAINER_NAME"
+  docker rm $CONTAINER_NAME
 fi
-
-docker rm $CONTAINER_NAME
