@@ -3,3 +3,6 @@ layer/
 
 # Ignore zipped packages ( such as the artifact )
 *.zip
+
+# Ignore swap files
+*.swp

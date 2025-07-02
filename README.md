@@ -19,5 +19,5 @@ Next make sure [.env](.env) file is set up correctly with the following:
  * HOST_PATH - Directory you save the artifact to.
 For creation, run [make-layer.sh](make-layer.sh). Make sure you run with elevated privileges since docker commands are being run.
 
-![AVATAR](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/73277118?v=4&width=50&height=50&mask=circle&maxage=7d
-)
+[![AVATAR](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/73277118?v=4&width=50&height=50&mask=circle&maxage=7d
+)](https://github.com/danieltravinsky)
