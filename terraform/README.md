@@ -11,7 +11,7 @@ The intended folder structure would be the following:
 ├── 📄 `other-terraform-files.tf`  
 ├── 📂 **lambda-stuff/**  
 │   ├── 🐍 `lambda-script.py`  
-│   ├── 📂 **for-layer-creation/** <--- Contents of [this repo](/../)  
+│   ├── 📂 **for-layer-creation/** <--- Contents of [this repo](/../..)  
 │   │   ├── 🐳 `Dockerfile`  
 │   │   ├── ⚙️ `make-layer.sh`  
 │   │   ├── 📝 `.env`  
