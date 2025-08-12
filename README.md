@@ -6,7 +6,7 @@ The scripts are bash scripts so if implementing in an environment such as terraf
 
 >[!NOTE]
 >Since opencv-python was the reason for the creation of this repo, the layer is for Python 3.12.
->That is because Lambda 3.9 is on amazonlinux:2 doesn't natively support Python 3.9 (For some reason).
+>That is because Lambda 3.9 is on amazonlinux:2 which doesn't natively support Python 3.9 (For some reason).
 >So for simplicity's sake I used Python 3.12 on amazonlinux:2023 for the layer.
   
 There is also a folder provided called [terraform](terraform/) containing a solution for implementing this layer creation in Terraform. Note that this may not be the best solution but it's what I managed to come up with, feel free to share better solutions.
