@@ -11,22 +11,22 @@ while [[ "$#" -gt 0 ]]; do
             HOST_PATH="$2"
             shift 2
             ;;
-	--artifact)
-	    ARTIFACT="$2"
-	    shift 2
-	    ;;
-	--delete-after-fail)
-	    DELETE_AFTER_FAIL="$2"
-	    shift 2
-	    ;;
-	--dont-build)
-	    DONT_BUILD="$2"
-	    shift 2
-	    ;;
-        *)
-            echo "Unknown parameter passed: $1"
-            exit 1
-            ;;
+      --artifact)
+          ARTIFACT="$2"
+          shift 2
+          ;;
+      --delete-after-fail)
+          DELETE_AFTER_FAIL="$2"
+          shift 2
+          ;;
+      --dont-build)
+          DONT_BUILD="$2"
+          shift 2
+          ;;
+      *)
+          echo "Unknown parameter passed: $1"
+          exit 1
+          ;;
     esac
 done
 
@@ -72,10 +72,22 @@ check-if-empty HOST_PATH ARTIFACT DELETE_AFTER_FAIL HOST_PATH
 
 set-defaults HOST_PATH layer ARTIFACT packages-layer.zip DELETE_AFTER_FAIL false DONT_BUILD true
 
-if [[ "$DELETE_AFTER_FAIL" != "true" && "$DELETE_AFTER_FAIL" != "false" ]]; then
-  echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
-  DELETE_AFTER_FAIL="False"
-fi
+# if [[ "$DELETE_AFTER_FAIL" != "true" && "$DELETE_AFTER_FAIL" != "false" ]]; then
+#   echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
+#   DELETE_AFTER_FAIL=0
+# fi
+
+case $DELETE_AFTER_FAIL in
+    --true)
+        DELETE_AFTER_FAIL=1
+        ;;
+    --false)
+        DELETE_AFTER_FAIL=0
+        ;;
+    *)
+        echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
+        DELETE_AFTER_FAIL=0
+esac
 
 mkdir -p $HOST_PATH
 
@@ -131,7 +143,7 @@ docker cp "$CONTAINER_NAME:/lambda/layer/$ARTIFACT" "$HOST_PATH/$ARTIFACT"
 if [ $? -ne 0 ]; then
   echo "❌ Copying from container failed"
   echo "Check that the paths and names match. Exiting."
-  if [ $DELETE_AFTER_FAIL ]; then
+  if (( $DELETE_AFTER_FAIL )); then
     echo "DELETE_AFTER_FAIL set to True, deleting container $CONTAINER_NAME"
     docker rm $CONTAINER_NAME
   else
