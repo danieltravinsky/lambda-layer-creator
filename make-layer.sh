@@ -76,18 +76,18 @@ set-defaults HOST_PATH layer ARTIFACT packages-layer.zip DELETE_AFTER_FAIL false
 #   echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
 #   DELETE_AFTER_FAIL=0
 # fi
-
-case $DELETE_AFTER_FAIL in
-    --true)
-        DELETE_AFTER_FAIL=1
-        ;;
-    --false)
-        DELETE_AFTER_FAIL=0
-        ;;
-    *)
-        echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
-        DELETE_AFTER_FAIL=0
-esac
+# 
+# case $DELETE_AFTER_FAIL in
+#     true)
+#         DELETE_AFTER_FAIL=1
+#         ;;
+#     false)
+#         DELETE_AFTER_FAIL=0
+#         ;;
+#     *)
+#         echo "Invalid value for DELETE_AFTER_FAIL: $DELETE_AFTER_FAIL -> setting default value false"
+#         DELETE_AFTER_FAIL=0
+# esac
 
 mkdir -p $HOST_PATH
 
@@ -102,7 +102,7 @@ if [ ! -d "$HOST_PATH" ]; then
   exit 1
 fi
 
-if [ $DONT_BUILD ]; then
+if [ "$DONT_BUILD" = "true" ]; then
   echo "DONT_BUILD variable set to true, skipping layer creation"
   exit 0
 fi
@@ -143,11 +143,13 @@ docker cp "$CONTAINER_NAME:/lambda/layer/$ARTIFACT" "$HOST_PATH/$ARTIFACT"
 if [ $? -ne 0 ]; then
   echo "❌ Copying from container failed"
   echo "Check that the paths and names match. Exiting."
-  if (( $DELETE_AFTER_FAIL )); then
+  # if (( $DELETE_AFTER_FAIL )); then
+  if [ "$DELETE_AFTER_FAIL" = true ]; then
     echo "DELETE_AFTER_FAIL set to True, deleting container $CONTAINER_NAME"
     docker rm $CONTAINER_NAME
   else
     echo "DELETE_AFTER_FAIL set to False, keeping container $CONTAINER_NAME"
+  fi
   exit 1
 else
   echo "Copying completed successfully to $HOST_PATH/$ARTIFACT"
